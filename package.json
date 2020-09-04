@@ -1,0 +1,19 @@
+{
+  "name": "hasura-sample",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "hasura": "yarn workspace hasura",
+    "web": "yarn workspace web"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**"
+    ]
+  }
+}
