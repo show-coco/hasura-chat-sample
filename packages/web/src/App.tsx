@@ -1,8 +1,16 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { useUserQuery } from "./generated/graphql";
 
 function App() {
+  const { data, error, loading } = useUserQuery();
+
+  if (loading) return <p>loading</p>;
+  if (error) return <p>{error}</p>;
+
+  console.log(data);
+
   return (
     <div className="App">
       <header className="App-header">
