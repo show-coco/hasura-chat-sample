@@ -8,14 +8,17 @@ module.exports = {
       },
     },
   ],
-  documents: ['./src/graphql/queries/*.graphql', './src/graphql/mutations/*.graphql'],
+  documents: [
+    "./src/graphql/queries/*.graphql",
+    "./src/graphql/mutations/*.graphql",
+  ],
   overwrite: true,
   generates: {
-    './src/generated/graphql.tsx': {
+    "./src/generated/graphql.tsx": {
       plugins: [
-        'typescript',
-        'typescript-operations',
-        'typescript-react-apollo',
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo",
       ],
       config: {
         skipTypename: false,
@@ -24,8 +27,8 @@ module.exports = {
         withComponent: false,
       },
     },
-    './graphql.schema.json': {
-      plugins: ['introspection'],
+    "./graphql.schema.json": {
+      plugins: ["introspection"],
     },
   },
 };

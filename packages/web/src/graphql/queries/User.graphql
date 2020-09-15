@@ -1,6 +1,6 @@
 query User {
-	user {
+  user {
     id
-    name
-	}
+    username
+  }
 }
