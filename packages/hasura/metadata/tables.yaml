@@ -1,3 +1,12 @@
 - table:
     schema: public
+    name: message
+- table:
+    schema: public
     name: user
+- table:
+    schema: public
+    name: user_online
+- table:
+    schema: public
+    name: user_typing
