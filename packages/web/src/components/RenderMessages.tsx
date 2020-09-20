@@ -9,6 +9,7 @@ type Props = {
   username: string;
   refetch: Refetch | undefined;
   setRefetch: React.Dispatch<React.SetStateAction<Refetch | undefined>>;
+  mutationCallback: MutationCallBack;
   setMutationCallback: React.Dispatch<
     React.SetStateAction<MutationCallBack | undefined>
   >;
@@ -29,9 +30,11 @@ const RenderMessages: FC<Props> = (props) => {
   /** 古いメッセージをmessagesに追加 */
   const addOldMessages = (inMessages: Messages) => {
     console.log("inMessages", inMessages);
-    if (messages !== undefined && inMessages !== undefined) {
-      const oldMessages = inMessages;
+    if (messages && inMessages) {
+      const oldMessages = [...messages, ...inMessages];
+      console.log("====oldMessages====", oldMessages);
       setMessages(oldMessages);
+      console.log("====messages====", messages);
       setNewMessages([]);
     }
   };
@@ -133,8 +136,9 @@ const RenderMessages: FC<Props> = (props) => {
   const mutationCallback = (message: Message) => {
     if (messages && newMessages && message) {
       const messagesDep = [...messages, ...newMessages];
+      console.log("messagesDep", messagesDep);
       messagesDep.push(message);
-      setMessages(messages);
+      setMessages(messagesDep);
     }
   };
 
@@ -166,7 +170,7 @@ const RenderMessages: FC<Props> = (props) => {
   }, [refetch]);
 
   useEffect(() => {
-    addOldMessages(data?.message);
+    if (messages && messages.length === 0) addOldMessages(data?.message);
   }, [data]);
 
   useEffect(() => {
@@ -174,8 +178,10 @@ const RenderMessages: FC<Props> = (props) => {
   }, [handleScroll]);
 
   useEffect(() => {
-    props.setMutationCallback(mutationCallback);
-  }, [mutationCallback]);
+    if (!props.mutationCallback) {
+      props.setMutationCallback(() => mutationCallback);
+    }
+  });
 
   // 新規メッセージが画面に表示されたら下へスクロール
   useEffect(() => {

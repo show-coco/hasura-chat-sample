@@ -1,0 +1,10 @@
+mutation InsertMessage($message: message_insert_input!) {
+  insert_message(objects: [$message]) {
+    returning {
+      id
+      timestamp
+      text
+      username
+    }
+  }
+}

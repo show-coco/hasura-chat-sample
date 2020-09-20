@@ -30,7 +30,7 @@ const Chat: FC<Props> = ({ userId, username }) => {
   const { data, loading, error } = useToNewMessagesSubscription();
 
   useEffect(() => {
-    console.log("new message", data?.message);
+    console.log("message", data?.message);
     if (refetch) {
       refetch();
     }
@@ -42,6 +42,7 @@ const Chat: FC<Props> = ({ userId, username }) => {
   return (
     <ChatWrapper
       username={username}
+      userId={userId}
       setRefetch={setRefetch}
       refetch={refetch}
     />
