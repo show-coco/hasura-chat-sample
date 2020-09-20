@@ -14,6 +14,11 @@ type Props = {
   >;
 };
 
+/**
+ * メッセージを取得して表示
+ * 新規メッセージがあれば、新規メッセージのところまでスクロールできるボタンを表示し、
+ * そのボタンを押したら新規メッセージを表示し新規メッセージまで自動スクロール
+ * */
 const RenderMessages: FC<Props> = (props) => {
   const [messages, setMessages] = useState<Messages>([]);
   const [newMessages, setNewMessages] = useState<Messages>([]);
@@ -21,9 +26,7 @@ const RenderMessages: FC<Props> = (props) => {
 
   const { data, loading, error, refetch } = useMessagesQuery();
 
-  console.log("messages", messages);
-
-  // 古いメッセージをmessagesに追加
+  /** 古いメッセージをmessagesに追加 */
   const addOldMessages = (inMessages: Messages) => {
     console.log("inMessages", inMessages);
     if (messages !== undefined && inMessages !== undefined) {
@@ -33,7 +36,7 @@ const RenderMessages: FC<Props> = (props) => {
     }
   };
 
-  // 新しいメッセージをnewMessagesに追加
+  /** 新しいメッセージをnewMessagesに追加 */
   const addNewMessages = (messages: Messages) => {
     if (newMessages && messages) {
       const newMessagesDep = [...newMessages];
@@ -47,19 +50,19 @@ const RenderMessages: FC<Props> = (props) => {
     }
   };
 
-  // 一番下のメッセージまでスクロール
+  /** 一番下のメッセージまでスクロール */
   const scrollToBottom = () => {
     const lastMessage = document.getElementById("lastMessage");
     if (lastMessage) lastMessage.scrollIntoView({ behavior: "smooth" });
   };
 
-  // 新しいメッセージまでスクロール
+  /** 新しいメッセージまでスクロール */
   const scrollToNewMessage = () => {
     const newMessage = document.getElementById("newMessage");
     if (newMessage) newMessage.scrollIntoView({ behavior: "smooth" });
   };
 
-  // ボタンを表示するか判定
+  /** ボタンを表示するか判定 */
   const handleScroll = (e: Event) => {
     const windowHeight =
       "innerHeight" in window
@@ -83,6 +86,7 @@ const RenderMessages: FC<Props> = (props) => {
     }
   };
 
+  /** メッセージを再取得する際の変数を返却 */
   const getLastReceivedVars = () => {
     if (newMessages && messages)
       if (newMessages.length === 0) {
@@ -105,6 +109,7 @@ const RenderMessages: FC<Props> = (props) => {
       }
   };
 
+  /** 最後のメッセージが画面上になければtrueを返却 */
   const isViewScrollable = () => {
     const isInViewport = (elem: HTMLElement) => {
       const bounding = elem.getBoundingClientRect();
@@ -124,7 +129,7 @@ const RenderMessages: FC<Props> = (props) => {
     return false;
   };
 
-  // テキストを入力した時にmessagesに追加する
+  /** テキストを入力した時にmessagesに追加 */
   const mutationCallback = (message: Message) => {
     if (messages && newMessages && message) {
       const messagesDep = [...messages, ...newMessages];
@@ -133,9 +138,12 @@ const RenderMessages: FC<Props> = (props) => {
     }
   };
 
+  /**
+   * 新規メッセージを取得し表示。画面上に最後のメッセージが表示されていれば新規メッセージを画面に表示
+   * 画面上に最後のメッセージが表示されていなければ新規メッセージに追加。新規メッセージ表示ボタンを押したらこれらのメッセージを表示
+   */
   const refetchWrapper = async () => {
     const resp = await refetch(getLastReceivedVars());
-    console.log("resp", resp);
     if (resp.data) {
       console.log("resp.data", resp.data);
       if (!isViewScrollable()) {
@@ -169,8 +177,11 @@ const RenderMessages: FC<Props> = (props) => {
     props.setMutationCallback(mutationCallback);
   }, [mutationCallback]);
 
+  // 新規メッセージが画面に表示されたら下へスクロール
   useEffect(() => {
-    scrollToBottom();
+    if (newMessages && newMessages.length === 0) {
+      scrollToBottom();
+    }
   }, [newMessages]);
 
   if (loading) return <p>Loading...</p>;
