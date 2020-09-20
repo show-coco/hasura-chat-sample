@@ -4924,13 +4924,13 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "user_name_key",
+            "name": "user_pkey",
             "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "user_pkey",
+            "name": "user_username_key",
             "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null

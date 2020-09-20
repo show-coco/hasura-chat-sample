@@ -853,9 +853,9 @@ export type User_Bool_Exp = {
 /** unique or primary key constraints on table "user" */
 export enum User_Constraint {
   /** unique or primary key constraint */
-  UserNameKey = 'user_name_key',
+  UserPkey = 'user_pkey',
   /** unique or primary key constraint */
-  UserPkey = 'user_pkey'
+  UserUsernameKey = 'user_username_key'
 }
 
 /** input type for incrementing integer column in table "user" */
@@ -1543,6 +1543,19 @@ export type User_Variance_Order_By = {
   id?: Maybe<Order_By>;
 };
 
+export type EmitOnlineEventMutationVariables = Exact<{
+  userId: Scalars['Int'];
+}>;
+
+
+export type EmitOnlineEventMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_user?: Maybe<(
+    { __typename?: 'user_mutation_response' }
+    & Pick<User_Mutation_Response, 'affected_rows'>
+  )> }
+);
+
 export type InsertUserMutationVariables = Exact<{
   username: Scalars['String'];
 }>;
@@ -1559,6 +1572,20 @@ export type InsertUserMutation = (
   )> }
 );
 
+export type MessagesQueryVariables = Exact<{
+  last_received_id?: Maybe<Scalars['Int']>;
+  last_received_ts?: Maybe<Scalars['timestamptz']>;
+}>;
+
+
+export type MessagesQuery = (
+  { __typename?: 'query_root' }
+  & { message: Array<(
+    { __typename?: 'message' }
+    & Pick<Message, 'id' | 'text' | 'username' | 'timestamp'>
+  )> }
+);
+
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1570,7 +1597,50 @@ export type UserQuery = (
   )> }
 );
 
+export type ToNewMessagesSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
+
+export type ToNewMessagesSubscription = (
+  { __typename?: 'subscription_root' }
+  & { message: Array<(
+    { __typename?: 'message' }
+    & Pick<Message, 'id' | 'username' | 'text' | 'timestamp'>
+  )> }
+);
+
+
+export const EmitOnlineEventDocument = gql`
+    mutation EmitOnlineEvent($userId: Int!) {
+  update_user(_set: {last_seen: "now()"}, where: {id: {_eq: $userId}}) {
+    affected_rows
+  }
+}
+    `;
+export type EmitOnlineEventMutationFn = Apollo.MutationFunction<EmitOnlineEventMutation, EmitOnlineEventMutationVariables>;
+
+/**
+ * __useEmitOnlineEventMutation__
+ *
+ * To run a mutation, you first call `useEmitOnlineEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEmitOnlineEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [emitOnlineEventMutation, { data, loading, error }] = useEmitOnlineEventMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useEmitOnlineEventMutation(baseOptions?: Apollo.MutationHookOptions<EmitOnlineEventMutation, EmitOnlineEventMutationVariables>) {
+        return Apollo.useMutation<EmitOnlineEventMutation, EmitOnlineEventMutationVariables>(EmitOnlineEventDocument, baseOptions);
+      }
+export type EmitOnlineEventMutationHookResult = ReturnType<typeof useEmitOnlineEventMutation>;
+export type EmitOnlineEventMutationResult = Apollo.MutationResult<EmitOnlineEventMutation>;
+export type EmitOnlineEventMutationOptions = Apollo.BaseMutationOptions<EmitOnlineEventMutation, EmitOnlineEventMutationVariables>;
 export const InsertUserDocument = gql`
     mutation InsertUser($username: String!) {
   insert_user(objects: [{username: $username}]) {
@@ -1606,6 +1676,43 @@ export function useInsertUserMutation(baseOptions?: Apollo.MutationHookOptions<I
 export type InsertUserMutationHookResult = ReturnType<typeof useInsertUserMutation>;
 export type InsertUserMutationResult = Apollo.MutationResult<InsertUserMutation>;
 export type InsertUserMutationOptions = Apollo.BaseMutationOptions<InsertUserMutation, InsertUserMutationVariables>;
+export const MessagesDocument = gql`
+    query Messages($last_received_id: Int, $last_received_ts: timestamptz) {
+  message(order_by: {timestamp: asc}, where: {_and: {id: {_neq: $last_received_id}, timestamp: {_gte: $last_received_ts}}}) {
+    id
+    text
+    username
+    timestamp
+  }
+}
+    `;
+
+/**
+ * __useMessagesQuery__
+ *
+ * To run a query within a React component, call `useMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessagesQuery({
+ *   variables: {
+ *      last_received_id: // value for 'last_received_id'
+ *      last_received_ts: // value for 'last_received_ts'
+ *   },
+ * });
+ */
+export function useMessagesQuery(baseOptions?: Apollo.QueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+        return Apollo.useQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, baseOptions);
+      }
+export function useMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MessagesQuery, MessagesQueryVariables>) {
+          return Apollo.useLazyQuery<MessagesQuery, MessagesQueryVariables>(MessagesDocument, baseOptions);
+        }
+export type MessagesQueryHookResult = ReturnType<typeof useMessagesQuery>;
+export type MessagesLazyQueryHookResult = ReturnType<typeof useMessagesLazyQuery>;
+export type MessagesQueryResult = Apollo.QueryResult<MessagesQuery, MessagesQueryVariables>;
 export const UserDocument = gql`
     query User {
   user {
@@ -1639,3 +1746,34 @@ export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQ
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
+export const ToNewMessagesDocument = gql`
+    subscription ToNewMessages {
+  message(limit: 1, order_by: {id: desc}) {
+    id
+    username
+    text
+    timestamp
+  }
+}
+    `;
+
+/**
+ * __useToNewMessagesSubscription__
+ *
+ * To run a query within a React component, call `useToNewMessagesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useToNewMessagesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useToNewMessagesSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useToNewMessagesSubscription(baseOptions?: Apollo.SubscriptionHookOptions<ToNewMessagesSubscription, ToNewMessagesSubscriptionVariables>) {
+        return Apollo.useSubscription<ToNewMessagesSubscription, ToNewMessagesSubscriptionVariables>(ToNewMessagesDocument, baseOptions);
+      }
+export type ToNewMessagesSubscriptionHookResult = ReturnType<typeof useToNewMessagesSubscription>;
+export type ToNewMessagesSubscriptionResult = Apollo.SubscriptionResult<ToNewMessagesSubscription>;

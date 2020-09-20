@@ -1,32 +1,25 @@
-import React from "react";
-import logo from "./logo.svg";
+import React, { useState } from "react";
 import "./App.css";
-import { useUserQuery } from "./generated/graphql";
+import Login from "./components/Login";
+import Chat from "./components/Chat";
 
 function App() {
-  const { data, error, loading } = useUserQuery();
+  const [username, setUsername] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState<number>();
 
-  if (loading) return <p>loading</p>;
-  if (error) return <p>{error}</p>;
-
-  console.log(data);
+  const login = (userId: number) => {
+    setIsLoggedIn(true);
+    setUserId(userId);
+  };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      {!isLoggedIn ? (
+        <Login username={username} setUsername={setUsername} login={login} />
+      ) : (
+        <Chat userId={userId || 0} username={username} />
+      )}
     </div>
   );
 }

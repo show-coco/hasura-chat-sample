@@ -11,6 +11,7 @@ module.exports = {
   documents: [
     "./src/graphql/queries/*.graphql",
     "./src/graphql/mutations/*.graphql",
+    "./src/graphql/subscribes/*.graphql",
   ],
   overwrite: true,
   generates: {

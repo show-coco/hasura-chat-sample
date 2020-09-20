@@ -1,0 +1,8 @@
+subscription ToNewMessages {
+  message(limit: 1, order_by: { id: desc }) {
+    id
+    username
+    text
+    timestamp
+  }
+}
