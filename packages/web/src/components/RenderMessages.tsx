@@ -89,7 +89,8 @@ const RenderMessages: FC<Props> = (props) => {
   /** メッセージを再取得する際の変数を返却 */
   const getLastReceivedVars = () => {
     if (newMessages && messages) {
-      // FIX: messagesとnewMessagesがnullになる
+      // TODO(FIX): messagesとnewMessagesが空配列になる
+      // (callbackとして上位コンポーネントで呼び出しているためstateの値が呼び出し時に初期化されている？)
       console.log("getLastReceivedVars.messages", messages);
       console.log("getLastReceivedVars.newMessages", newMessages);
       if (newMessages.length === 0) {
