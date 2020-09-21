@@ -30,7 +30,6 @@ const Chat: FC<Props> = ({ userId, username }) => {
   const { data, loading, error } = useToNewMessagesSubscription();
 
   useEffect(() => {
-    console.log("message", data?.message);
     if (refetch) {
       refetch();
     }

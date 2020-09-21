@@ -54,7 +54,6 @@ const Textbox: FC<Props> = ({ userId, username, mutationCallback }) => {
     e.preventDefault();
     const { data } = await insertMessageMutation();
     const res: Message = data?.insert_message?.returning[0];
-    console.log("res", res);
     if (mutationCallback) mutationCallback(res);
     setText("");
   };

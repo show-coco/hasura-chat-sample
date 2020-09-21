@@ -29,12 +29,9 @@ const RenderMessages: FC<Props> = (props) => {
 
   /** 古いメッセージをmessagesに追加 */
   const addOldMessages = (inMessages: Messages) => {
-    console.log("inMessages", inMessages);
     if (messages && inMessages) {
       const oldMessages = [...messages, ...inMessages];
-      console.log("====oldMessages====", oldMessages);
       setMessages(oldMessages);
-      console.log("====messages====", messages);
       setNewMessages([]);
     }
   };
@@ -91,7 +88,10 @@ const RenderMessages: FC<Props> = (props) => {
 
   /** メッセージを再取得する際の変数を返却 */
   const getLastReceivedVars = () => {
-    if (newMessages && messages)
+    if (newMessages && messages) {
+      // FIX: messagesとnewMessagesがnullになる
+      console.log("getLastReceivedVars.messages", messages);
+      console.log("getLastReceivedVars.newMessages", newMessages);
       if (newMessages.length === 0) {
         if (messages.length !== 0) {
           return {
@@ -110,6 +110,7 @@ const RenderMessages: FC<Props> = (props) => {
           last_received_ts: newMessages[newMessages.length - 1].timestamp,
         };
       }
+    }
   };
 
   /** 最後のメッセージが画面上になければtrueを返却 */
@@ -136,9 +137,9 @@ const RenderMessages: FC<Props> = (props) => {
   const mutationCallback = (message: Message) => {
     if (messages && newMessages && message) {
       const messagesDep = [...messages, ...newMessages];
-      console.log("messagesDep", messagesDep);
       messagesDep.push(message);
       setMessages(messagesDep);
+      setNewMessages([]);
     }
   };
 
@@ -149,7 +150,6 @@ const RenderMessages: FC<Props> = (props) => {
   const refetchWrapper = async () => {
     const resp = await refetch(getLastReceivedVars());
     if (resp.data) {
-      console.log("resp.data", resp.data);
       if (!isViewScrollable()) {
         addOldMessages(resp.data.message);
       } else {
@@ -161,6 +161,11 @@ const RenderMessages: FC<Props> = (props) => {
       }
     }
   };
+
+  useEffect(() => {
+    console.log("====messages====", messages);
+    console.log("====new messages====", newMessages);
+  }, [messages, newMessages]);
 
   useEffect(() => {
     if (!props.refetch) {
@@ -198,6 +203,11 @@ const RenderMessages: FC<Props> = (props) => {
       <MessageList
         messages={messages}
         isNew={false}
+        username={props.username}
+      />
+      <MessageList
+        messages={newMessages}
+        isNew={true}
         username={props.username}
       />
     </div>
