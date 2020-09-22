@@ -19,7 +19,7 @@ const TypingIndicator: FC<Props> = ({ userId }) => {
     <div className="typingIndicator">
       {data && data.user_typing.length === 0
         ? ""
-        : `${data && data.user_typing[0].username}{" "}is typing ...`}
+        : `${data && data.user_typing[0].username}${" "}is typing ...`}
     </div>
   );
 };
