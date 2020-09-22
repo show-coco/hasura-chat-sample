@@ -196,11 +196,10 @@ const Chat: FC<Props> = ({ userId, username }) => {
   }, []);
 
   useEffect(() => {
-    console.log(subscriptionCount);
-    setSubscriptionCount((subscriptionCount) => (subscriptionCount += 1));
     if (subscriptionCount > 1) {
       refetchWrapper(newMessagesData?.message[0]);
     }
+    setSubscriptionCount((subscriptionCount) => (subscriptionCount += 1));
   }, [newMessagesData]);
 
   if (messagesLoading) return <p>Loading...</p>;
