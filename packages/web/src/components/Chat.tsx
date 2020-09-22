@@ -23,6 +23,7 @@ const Chat: FC<Props> = ({ userId, username }) => {
   const [messages, setMessages] = useState<Messages>([]);
   const [newMessages, setNewMessages] = useState<Messages>([]);
   const [isBottom, setIsBottom] = useState(false);
+  const [subscriptionCount, setSubscriptionCount] = useState(0);
   const [mutationCallBack, setMutationCallback] = useState<MutationCallBack>();
 
   const [emitOnlineEvent] = useEmitOnlineEventMutation({
@@ -194,9 +195,12 @@ const Chat: FC<Props> = ({ userId, username }) => {
     }, 3000);
   }, []);
 
-  // TODO(FIX): メッセージ送信されていないのに初回にメッセージを取得している
   useEffect(() => {
-    refetchWrapper(newMessagesData?.message[0]);
+    console.log(subscriptionCount);
+    setSubscriptionCount((subscriptionCount) => (subscriptionCount += 1));
+    if (subscriptionCount > 1) {
+      refetchWrapper(newMessagesData?.message[0]);
+    }
   }, [newMessagesData]);
 
   if (messagesLoading) return <p>Loading...</p>;
