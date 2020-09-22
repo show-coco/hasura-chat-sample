@@ -14,6 +14,11 @@ type Props = {
 
 export type Refetch = (newMessage: Message) => void;
 
+/**
+ * メッセージを取得して表示
+ * 新規メッセージがあれば、新規メッセージのところまでスクロールできるボタンを表示し、
+ * そのボタンを押したら新規メッセージを表示し新規メッセージまで自動スクロール
+ * */
 const Chat: FC<Props> = ({ userId, username }) => {
   const [messages, setMessages] = useState<Messages>([]);
   const [newMessages, setNewMessages] = useState<Messages>([]);
