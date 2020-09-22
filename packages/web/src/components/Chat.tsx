@@ -52,7 +52,7 @@ const Chat: FC<Props> = ({ userId, username }) => {
     }
   };
 
-  /** 新しいメッセージをnewMessagesに追加 */
+  /** 新規メッセージをnewMessagesに追加 */
   const addNewMessages = (messages: Messages) => {
     if (newMessages && messages) {
       const newMessagesDep = [...newMessages];
@@ -66,6 +66,7 @@ const Chat: FC<Props> = ({ userId, username }) => {
     }
   };
 
+  /** 新規メッセージをmessagesに移動 */
   const moveNewMessages = () => {
     if (newMessages && messages) {
       const messagesDep = [...messages, ...newMessages];
@@ -80,7 +81,7 @@ const Chat: FC<Props> = ({ userId, username }) => {
     if (lastMessage) lastMessage.scrollIntoView({ behavior: "smooth" });
   };
 
-  /** 新しいメッセージまでスクロール */
+  /** 新規メッセージまでスクロール */
   const scrollToNewMessage = () => {
     const newMessage = document.getElementById("newMessage");
     if (newMessage) newMessage.scrollIntoView({ behavior: "smooth" });
@@ -108,34 +109,6 @@ const Chat: FC<Props> = ({ userId, username }) => {
       setIsBottom(true);
     } else {
       setIsBottom(false);
-    }
-  };
-
-  /** メッセージを再取得する際の変数を返却 */
-  const getLastReceivedVars = () => {
-    if (newMessages && messages) {
-      // TODO(FIX): messagesとnewMessagesが空配列になる
-      // (callbackとして上位コンポーネントで呼び出しているためstateの値が呼び出し時に初期化されている？)
-      console.log("getLastReceivedVars.messages", messages);
-      console.log("getLastReceivedVars.newMessages", newMessages);
-      if (newMessages.length === 0) {
-        if (messages.length !== 0) {
-          return {
-            last_received_id: messages[messages.length - 1].id,
-            last_received_ts: messages[messages.length - 1].timestamp,
-          };
-        } else {
-          return {
-            last_received_id: -1,
-            last_received_ts: "2018-08-21T19:58:46.987552+00:00",
-          };
-        }
-      } else {
-        return {
-          last_received_id: newMessages[newMessages.length - 1].id,
-          last_received_ts: newMessages[newMessages.length - 1].timestamp,
-        };
-      }
     }
   };
 
