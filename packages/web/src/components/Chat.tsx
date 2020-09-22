@@ -66,6 +66,14 @@ const Chat: FC<Props> = ({ userId, username }) => {
     }
   };
 
+  const moveNewMessages = () => {
+    if (newMessages && messages) {
+      const messagesDep = [...messages, ...newMessages];
+      setMessages(messagesDep);
+      setNewMessages([]);
+    }
+  };
+
   /** 一番下のメッセージまでスクロール */
   const scrollToBottom = () => {
     const lastMessage = document.getElementById("lastMessage");
@@ -76,6 +84,7 @@ const Chat: FC<Props> = ({ userId, username }) => {
   const scrollToNewMessage = () => {
     const newMessage = document.getElementById("newMessage");
     if (newMessage) newMessage.scrollIntoView({ behavior: "smooth" });
+    setTimeout(moveNewMessages, 3000);
   };
 
   /** ボタンを表示するか判定 */
@@ -212,6 +221,7 @@ const Chat: FC<Props> = ({ userId, username }) => {
     }, 3000);
   }, []);
 
+  // TODO(FIX): メッセージ送信されていないのに初回にメッセージを取得している
   useEffect(() => {
     refetchWrapper(newMessagesData?.message[0]);
   }, [newMessagesData]);
@@ -226,6 +236,9 @@ const Chat: FC<Props> = ({ userId, username }) => {
       messages={messages}
       newMessages={newMessages}
       mutationCallback={mutationCallBack}
+      isViewScrollable={isViewScrollable}
+      bottom={isBottom}
+      scrollToNewMessage={scrollToNewMessage}
     />
   );
 };

@@ -1,6 +1,5 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import RenderMessages from "./RenderMessages";
-import { Refetch } from "./Chat";
 import { Message, Messages } from "../types/Message";
 import Textbox from "./Textbox";
 
@@ -10,6 +9,9 @@ type Props = {
   messages: Messages;
   newMessages: Messages;
   mutationCallback: MutationCallBack;
+  bottom: boolean;
+  isViewScrollable: () => boolean;
+  scrollToNewMessage: () => void;
 };
 
 export type MutationCallBack = ((message: Message) => void) | undefined;
